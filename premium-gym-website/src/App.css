@@ -1,0 +1,79 @@
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Desktop par Mobile Menu hide rakhein */
+.mobile-menu-container {
+  display: none;
+}
+
+/* Mobile View (768px se choti screen) */
+@media screen and (max-width: 768px) {
+  /* Desktop links ko har haal mein gayab karein */
+  .desktop-links {
+    display: none !important; 
+  }
+
+  /* Mobile icon ko show karein */
+  .mobile-toggle-btn {
+    display: block !important;
+  }
+
+  /* Hero Section settings */
+  .hero-title {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+  }
+  .hero-subtitle {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Gallery Main Grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* PC par 3 columns */
+  gap: 15px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  position: relative;
+  background-color: #111;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #222;
+  /* Square shape taake ek screen par zyada dikhein */
+  aspect-ratio: 1 / 1; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Seedhi photos ke liye */
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Tedhi photos ko seedha aur fit karne ke liye */
+.sideways-fix {
+  transform: rotate(-90deg) scale(1.8); /* -90 se seedha hoga, scale se gaps khatam */
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive settings */
+@media screen and (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr); /* Mobile par 2 columns taake scannable ho */
+    gap: 10px;
+  }
+}
