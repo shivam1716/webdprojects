@@ -1,0 +1,285 @@
+.converter-section{
+
+padding:80px 20px;
+
+color:white;
+
+text-align:center;
+
+}
+
+
+
+.converter-section h2{
+
+font-size:42px;
+
+margin-bottom:40px;
+
+}
+
+
+
+.converter-card{
+
+
+max-width:500px;
+
+margin:auto;
+
+
+padding:35px;
+
+
+
+background:
+
+rgba(255,255,255,.1);
+
+
+
+border-radius:30px;
+
+
+
+backdrop-filter:
+
+blur(20px);
+
+
+
+border:
+
+1px solid rgba(255,255,255,.2);
+
+
+display:flex;
+
+flex-direction:column;
+
+gap:20px;
+
+
+}
+
+
+
+.converter-card input,
+
+.converter-card select{
+
+
+padding:15px;
+
+
+border-radius:15px;
+
+
+border:none;
+
+
+outline:none;
+
+
+font-size:16px;
+
+
+background:
+
+rgba(255,255,255,.2);
+
+
+color:white;
+
+
+}
+
+
+
+.converter-card option{
+
+color:black;
+
+}
+
+
+
+
+.swap{
+
+
+width:55px;
+
+height:55px;
+
+margin:auto;
+
+
+border-radius:50%;
+
+
+border:none;
+
+
+background:#ff9800;
+
+
+color:white;
+
+
+font-size:22px;
+
+
+cursor:pointer;
+
+
+transition:.3s;
+
+
+}
+
+
+
+.swap:hover{
+
+
+transform:rotate(180deg);
+
+
+}
+
+
+
+
+.convert{
+
+
+padding:16px;
+
+
+border-radius:20px;
+
+
+border:none;
+
+
+font-size:18px;
+
+
+cursor:pointer;
+
+
+background:
+
+linear-gradient(
+
+90deg,
+
+#00ff99,
+
+#00d2ff
+
+);
+
+
+}
+
+
+
+.answer{
+
+
+margin-top:20px;
+
+
+padding:20px;
+
+
+background:
+
+rgba(0,0,0,.2);
+
+
+border-radius:20px;
+
+
+}
+
+
+
+.answer h1{
+
+
+color:#00ff99;
+
+
+}
+/* Dark Theme */
+.converter-card,
+.converter-card h2,
+.converter-card h3,
+.converter-card p,
+.converter-card label {
+    color:white;
+}
+
+
+/* Inputs and dropdowns in dark mode */
+.converter-card input,
+.converter-card select {
+
+    color:white;
+
+}
+
+
+.converter-card option{
+
+    color:black;
+
+}
+
+
+
+/* Light Theme */
+body.light .converter-card,
+body.light .converter-card h2,
+body.light .converter-card h3,
+body.light .converter-card p,
+body.light .converter-card label {
+
+    color:#111;
+
+}
+
+
+/* Light mode input text */
+body.light .converter-card input,
+body.light .converter-card select {
+
+    color:#111;
+
+    background:rgba(0,0,0,0.08);
+
+}
+
+
+
+/* Light mode dropdown options */
+body.light .converter-card option {
+
+    color:black;
+
+}
+.converter-card input::placeholder{
+
+color:rgba(255,255,255,.7);
+
+}
+
+
+body.light .converter-card input::placeholder{
+
+color:#555;
+
+}
