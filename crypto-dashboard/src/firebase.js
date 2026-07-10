@@ -12,7 +12,7 @@ getFirestore
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyAEoYL8Yh-mohVSLOY66QAdTg70xUd4nzQ",
+apiKey: "mohVSLOY66QAdTg70xUd4nzQ-AIzaSyAEoYL8Yh",
 
 authDomain: "cryptox-fe048.firebaseapp.com",
 
