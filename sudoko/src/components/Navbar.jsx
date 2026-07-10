@@ -7,7 +7,7 @@ const Navbar = () => {
         <div className="logo">SuDoKu</div>
         <div className="navLinks">
             <ul>
-                <li><a href='https://github.com/ADi7YA26' target='_blank' rel='noreferrer'><AiFillGithub /> </a></li>
+                <li><a href='https://github.com/shivam1716' target='_blank' rel='noreferrer'><AiFillGithub /> </a></li>
             </ul>
         </div>
     </div>
