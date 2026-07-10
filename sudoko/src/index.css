@@ -1,0 +1,378 @@
+@font-face {
+  font-family: "Clear Sans";
+  src: url("../src/clear-sans.ttf") format("truetype");
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+:root{
+  --color-primary: #6366f1;
+  --color-secondary: #e0e7ff;
+
+  --color-background-primary: #fff;
+  --color-background-secondary: #f9f8fb;
+  --color-background-cell: var(--color-background-secondary);
+
+  --color-background-selected: #e0e7ff;
+  --color-background-same-value: #c0cefd;
+  --color-background-selected-cell: #b1c2fb;
+
+  --color-text: #4a5568;
+  --color-text-secondary: #edf2f7;
+  --color-white: #fff;
+}
+
+body {
+  background: var(--color-background-primary);
+  font-family: "Clear Sans", sans-serif;
+  font-size: 21px;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+.flex-box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  padding: 10px 0;
+  width: 450px;
+  color: var(--color-white);
+  font-weight: bold;
+}
+
+.navbar{
+  width: 100vw;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 30px;
+  color: var(--color-white);
+}
+.navbar .logo{font-weight: 600;}
+.navbar .navLinks ul{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  list-style: none;
+}
+.navbar .navLinks ul a{
+  color: var(--color-white);
+  font-size: 2rem;
+  text-decoration: none;
+}
+.navbar .navLinks ul li:hover{
+  transform: scale(1.1);
+  transition: all 0.5s ease;
+}
+
+.App{
+  position: relative;
+  margin-top: 90px;
+  min-height: calc(100vh - 100px);
+  background: var(--color-background-primary);
+}
+.game{
+  max-width: 900px;
+  margin: auto;
+  gap: 10px 40px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 3fr 1.5fr;
+  grid-template-rows: repeat(3, 1fr);
+}
+.board{
+  display: grid;
+  gap: 1px;
+  width: 100%;
+  padding: 3px;
+  border-radius: 6px;
+  background-color: var(--color-text);
+  grid-column-start: 1 ;
+  grid-row: 1/ 4;
+}
+.board .row{
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(9, 1fr);
+  height: auto;
+}
+.cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background-color: var(--color-background-cell);
+  box-sizing: border-box;
+  color: var(--color-primary);
+  aspect-ratio: 1;
+}
+.cell:not(:last-child):nth-child(3),
+.cell:not(:last-child):nth-child(6){
+  border-right: 3px solid var(--color-text);
+}
+
+.row:not(:last-child):nth-child(3) .cell,
+.row:not(:last-child):nth-child(6) .cell{
+  border-bottom: 3px solid var(--color-text);
+}
+
+.cell.disabled{
+  color: var(--color-text);
+}
+.cell.selected{
+  background: var(--color-background-selected);
+}
+.cell.same-value{
+  background: var(--color-background-same-value);
+}
+.cell.selected-cell{
+  background: var(--color-background-selected-cell);
+}
+
+
+.detail-box{
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  height: 120%;
+  background: var(--color-background-secondary);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.detail-box .button{
+  width: 48%;
+}
+.dificulty-level{
+  text-align: center;
+  width: 100%;
+  color: var(--color-primary);
+}
+.time-box{
+  text-align: center;
+  background: var(--color-secondary);
+  color: var(--color-text);
+  padding: 10px;
+  border-radius: 10px;
+  flex-basis: 100%;
+}
+.time-header{
+  font-size: 50%;
+}
+
+.keyboard{
+  width: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  grid-row-start: 2;
+  grid-row-end: 4;
+  padding-top: 70px;
+  justify-content: center;
+}
+.keyboard .keys{
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  font-size: 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.button{
+  background-color: var(--color-primary);
+  border: none;
+  padding: 10px 15px;
+  color: white;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.5s ease;
+  font-size: 1.2rem;
+  text-align: center;
+}
+.button:hover{
+  transform: scale(1.05);
+}
+.cancel-button{
+  position: absolute;
+  top: 10px; right: 20px;
+  font-size: 2rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.cancel-button:hover{
+  color: var(--color-primary);
+}
+
+
+.overlay {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: 30px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+  z-index: 1000; /* Make sure the overlay is above other content */
+  
+}
+
+.modal.modal-show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-background-primary);
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  z-index: 1001; /* Make sure the modal is above the overlay */
+}
+.modal.modal-show h2{
+  font-size: 20px;
+  color: var(--color-text);
+}
+.modal .modal-content .dificulty-buttons{
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px;
+  gap: 10px;
+}
+.keyboard .keys:last-child{
+  grid-column-start: 2;
+}
+.keyboard.gameWon::after{
+  content: 'YOU WON';
+  position: absolute;
+  font-size: 8rem;
+  top: 20px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  -webkit-text-stroke: 1px var(--color-white);
+  color: transparent;
+  writing-mode: sideways-rl;
+  background-color: var(--color-primary);
+  border-radius: 10px;
+}
+
+.valid-error-modal{
+  position: fixed;
+  top: 80px;right: 10px;
+  width: 200px;
+  height: 60px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: 1px solid var(--color-background-primary);
+  border-radius: 10px;
+}
+
+/* Media queries for responsiveness */
+
+@media screen and (max-width: 1000px){
+  /* html{font-size: 90%;} */
+  .game{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+  }
+  .board{
+    margin: 20px 0;
+  }
+  .detail-box{
+    height: auto;
+    padding: 10px 50px;
+  }
+  .time-box{
+    margin: 5px 0;
+  }
+
+  .keyboard{
+    grid-template-columns: repeat(10, 1fr);
+    background: var(--color-background-secondary);
+    padding: 20px 10px;
+    border-radius: 10px;
+  }
+  .keyboard .keys{
+    aspect-ratio: 1;
+  }
+  .keyboard.gameWon::after{
+    font-size: 3rem;
+    writing-mode: horizontal-tb;
+  }
+  .keyboard .keys:last-child{
+    grid-column-start: initial;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .App{ margin-top: 50px; }
+  .game { width: 95%; }
+  .cell{ padding: 0; }
+  .board{margin: 0;}
+  .detail-box .button{ width: 100%; }
+  .detail-box{
+    flex-wrap: nowrap;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    padding: 2px;
+    gap: 10px;
+    font-size: 1rem;
+    padding-right: 10px;
+    margin-top: 10px;
+  }
+  .time-box{ padding: 7px 0; }
+  .App{ background: linear-gradient(var(--color-primary) 40%, var(--color-background-primary) 40%) }
+  .game{ padding-top: 50px;}
+  .text{ width: 340px; }
+  .modal.modal-show{ padding: 15px 5px; }
+}
+
+@media screen and (max-width: 450px){
+  .detail-box,.button{font-size: 0.8rem;}
+  .button{padding: 5px;}
+  .game { width: 100%; }
+  .board { border-radius: 0px; padding:1.5px;}
+  .modal.modal-show .button {font-size: 1rem; width: 94%; border-radius: 5px; padding: 10px;}
+  .cell{overflow: hidden; font-size: 1.6rem;}
+  .cell:not(:last-child):nth-child(3n),
+  .cell:not(:last-child):nth-child(6n){
+    border-right: 1.5px solid var(--color-text);
+  }
+  .time-header{display: none;}
+  .time-box{flex-direction: row;}
+  .row:not(:last-child):nth-child(3n) .cell,
+  .row:not(:last-child):nth-child(6n) .cell{
+    border-bottom: 1.5px solid var(--color-text);
+  }
+  .keyboard{
+    background: transparent;
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
