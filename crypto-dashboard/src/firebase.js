@@ -13,16 +13,12 @@ getFirestore
 const firebaseConfig = {
 
 apiKey: "AIzaSyAEoYL8Yh-mohVSLOY66QAdTg70xUd4nzQ",
-
 authDomain: "cryptox-fe048.firebaseapp.com",
-
 projectId: "cryptox-fe048",
-
 storageBucket: "cryptox-fe048.firebasestorage.app",
-
 messagingSenderId: "775341539641",
-
-appId: "1:775341539641:web:c92c21bc479f79a542a8e8"
+appId: "1:775341539641:web:c92c21bc479f79a542a8e8",
+measurementId: "G-7YHS6WM0KF"
 
 };
 
