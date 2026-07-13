@@ -1,524 +1,147 @@
 import { useEffect, useState } from "react";
-
-import {
-  doc,
-  getDoc,
-  setDoc
-} from "firebase/firestore";
-
-import {
-  auth,
-  db
-} from "../firebase";
-
-import {
-  onAuthStateChanged
-} from "firebase/auth";
-
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import "./CryptoCards.css";
 
+function CryptoCards() {
+  const [coins, setCoins] = useState([]);
+  const [user, setUser] = useState(null);
+  const [favorites, setFavorites] = useState([]);
 
+  // Detect logged-in user
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
 
-function CryptoCards(){
+      if (currentUser) {
+        loadFavorites(currentUser.uid);
+      }
+    });
 
+    return unsubscribe;
+  }, []);
 
-const [coins,setCoins]=useState([]);
+  // Fetch live coins
+  useEffect(() => {
+    fetchCoins();
 
-const [user,setUser]=useState(null);
+    const interval = setInterval(fetchCoins, 30000);
 
-const [favorites,setFavorites]=useState([]);
+    return () => clearInterval(interval);
+  }, []);
 
+  const fetchCoins = async () => {
+    try {
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=12&page=1&sparkline=true"
+      );
 
+      const data = await response.json();
 
+      if (Array.isArray(data)) {
+        setCoins(data);
+      } else {
+        setCoins([]);
+      }
+    } catch (error) {
+      console.log("Fetch Error:", error);
+      setCoins([]);
+    }
+  };
 
+  // Load favorites
+  const loadFavorites = async (uid) => {
+    try {
+      const snap = await getDoc(doc(db, "favorites", uid));
 
-// Detect login user
+      if (snap.exists()) {
+        setFavorites(snap.data().coins || []);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-useEffect(()=>{
+  // Add favorite
+  const addFavorite = async (coin) => {
+    if (!user) {
+      alert("Please login first.");
+      return;
+    }
 
+    const exists = favorites.some((item) => item.id === coin.id);
 
-const unsubscribe = onAuthStateChanged(
+    if (exists) {
+      alert("Already in favorites ⭐");
+      return;
+    }
 
-auth,
+    const updated = [...favorites, coin];
 
-(currentUser)=>{
+    setFavorites(updated);
 
-setUser(currentUser);
+    try {
+      await setDoc(doc(db, "favorites", user.uid), {
+        coins: updated,
+      });
 
+      alert(`${coin.name} added to favorites ⭐`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-if(currentUser){
+  return (
+    <section className="crypto-section">
+      <h2>Live Crypto Markets</h2>
 
-loadFavorites(currentUser.uid);
+      <div className="crypto-container">
+        {coins.map((coin) => {
+          const change = Number(coin.price_change_percentage_24h ?? 0);
 
+          return (
+            <div className="crypto-card" key={coin.id}>
+              <div className="coin-header">
+                <img src={coin.image} alt={coin.name} />
+
+                <div>
+                  <h3>{coin.name}</h3>
+                  <span>{coin.symbol?.toUpperCase()}</span>
+                </div>
+              </div>
+
+              <h2>
+                $
+                {Number(coin.current_price ?? 0).toLocaleString()}
+              </h2>
+
+              <p>
+                Market Cap: $
+                {Number(coin.market_cap ?? 0).toLocaleString()}
+              </p>
+
+              <p>
+                Volume: $
+                {Number(coin.total_volume ?? 0).toLocaleString()}
+              </p>
+
+              <p className={change >= 0 ? "green" : "red"}>
+                {change >= 0 ? "▲" : "▼"} {change.toFixed(2)}%
+              </p>
+
+              <button
+                className="favorite-btn"
+                onClick={() => addFavorite(coin)}
+              >
+                ⭐ Add Favorite
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
-
-}
-
-);
-
-
-return unsubscribe;
-
-
-},[]);
-
-
-
-
-
-
-
-// Fetch live coins
-
-useEffect(()=>{
-
-
-fetchCoins();
-
-
-const interval=setInterval(()=>{
-
-fetchCoins();
-
-},30000);
-
-
-
-return()=>clearInterval(interval);
-
-
-
-},[]);
-
-
-
-
-
-
-
-const fetchCoins=async()=>{
-
-
-try{
-
-
-const response=await fetch(
-
-"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=12&page=1&sparkline=true"
-
-);
-
-
-
-const data=await response.json();
-
-
-
-setCoins(data);
-
-
-
-}
-
-catch(error){
-
-console.log(error);
-
-}
-
-
-};
-
-
-
-
-
-
-
-
-
-// Load favorites from Firebase
-
-const loadFavorites=async(uid)=>{
-
-
-const ref=
-
-doc(
-
-db,
-
-"favorites",
-
-uid
-
-);
-
-
-
-const snap=
-
-await getDoc(ref);
-
-
-
-if(snap.exists()){
-
-
-setFavorites(
-
-snap.data().coins || []
-
-);
-
-
-}
-
-
-
-};
-
-
-
-
-
-
-
-
-
-// Add favorite
-
-const addFavorite=async(coin)=>{
-
-
-if(!user){
-
-
-alert(
-
-"Please login first to save favorites"
-
-);
-
-
-return;
-
-
-}
-
-
-
-
-const exists=
-
-favorites.find(
-
-item=>item.id===coin.id
-
-);
-
-
-
-if(exists){
-
-
-alert(
-
-"Already in favorites ⭐"
-
-);
-
-
-return;
-
-
-}
-
-
-
-
-
-const updated=[
-
-...favorites,
-
-coin
-
-];
-
-
-
-setFavorites(updated);
-
-
-
-await setDoc(
-
-doc(
-
-db,
-
-"favorites",
-
-user.uid
-
-),
-
-{
-
-coins:updated
-
-}
-
-);
-
-
-
-alert(
-
-`${coin.name} added to favorites ⭐`
-
-);
-
-
-
-};
-
-
-
-
-
-
-
-
-
-return(
-
-
-<section className="crypto-section">
-
-
-
-<h2>
-
-Live Crypto Markets
-
-</h2>
-
-
-
-
-
-<div className="crypto-container">
-
-
-
-
-
-{
-
-coins.map((coin)=>(
-
-
-<div
-
-className="crypto-card"
-
-key={coin.id}
-
->
-
-
-
-
-<div className="coin-header">
-
-
-<img
-
-src={coin.image}
-
-alt={coin.name}
-
-/>
-
-
-
-<div>
-
-<h3>
-
-{coin.name}
-
-</h3>
-
-
-<span>
-
-{coin.symbol.toUpperCase()}
-
-</span>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-<h2>
-
-${coin.current_price.toLocaleString()}
-
-</h2>
-
-
-
-
-
-
-
-<p>
-
-Market Cap:
-
-$
-
-{coin.market_cap.toLocaleString()}
-
-</p>
-
-
-
-
-
-
-<p>
-
-Volume:
-
-$
-
-{coin.total_volume.toLocaleString()}
-
-</p>
-
-
-
-
-
-
-
-<p
-
-className={
-
-coin.price_change_percentage_24h >=0
-
-?
-
-"green"
-
-:
-
-"red"
-
-}
-
->
-
-
-{
-
-coin.price_change_percentage_24h >=0
-
-?
-
-"▲"
-
-:
-
-"▼"
-
-}
-
-
-
-{" "}
-
-
-
-{
-
-coin.price_change_percentage_24h
-
-?
-
-coin.price_change_percentage_24h.toFixed(2)
-
-:
-
-"0"
-
-}%
-
-
-</p>
-
-
-
-
-
-
-
-
-<button
-
-className="favorite-btn"
-
-onClick={()=>addFavorite(coin)}
-
->
-
-⭐ Add Favorite
-
-</button>
-
-
-
-
-
-
-</div>
-
-
-))
-
-
-}
-
-
-
-</div>
-
-
-
-
-
-</section>
-
-
-);
-
-
-}
-
-
 
 export default CryptoCards;

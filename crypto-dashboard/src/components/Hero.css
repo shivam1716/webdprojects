@@ -12,7 +12,7 @@ position:relative;
 
 overflow:hidden;
 
-color:white;
+color:rgb(0, 0, 0);
 
 padding:40px;
 
@@ -53,7 +53,7 @@ background:linear-gradient(
 #7b2ff7
 );
 
--webkit-background-clip:text;
+background-clip:text;
 
 color:transparent;
 
@@ -171,7 +171,7 @@ gap:40px;
 
 .stats div{
 
-background:rgba(255,255,255,.1);
+background:rgb(255, 255, 255);
 
 padding:20px 35px;
 
@@ -211,11 +211,11 @@ right:10%;
 
 font-size:180px;
 
-color:#f7931a;
+color:#f8ff78;
 
 text-shadow:
 
-0 0 30px #f7931a;
+0 0 30px #f71a1a;
 
 
 }
