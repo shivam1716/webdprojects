@@ -6,7 +6,7 @@ import {checkWin} from '../helper/checkWin'
 const Board = () => {
   let { state, setSelectedCell, setCellValue, setCustomBoard, setGameWon } = useContext(BoardContext);
   const cellRef = useRef(null)
-  const {actualBoard, currentBoard, gameWon, selectedCell, isCustomBoard} = state;
+  const {actualBoard, currentBoard, gameWon, selectedCell, isCustomBoard, isPaused, solvedBoard} = state;
 
   
   useEffect(() => {
@@ -17,11 +17,11 @@ const Board = () => {
   }, [currentBoard, setGameWon])
 
   const handleCellClick = (row, col) => {
-    if(!gameWon) setSelectedCell( {row, col} );
+    if(!gameWon && !isPaused) setSelectedCell( {row, col} );
   };
 
   const handleKeyPress = (event) => {
-    if (selectedCell === undefined || gameWon) {
+    if (selectedCell == null || gameWon || isPaused) {
       return;
     }
 
@@ -62,6 +62,7 @@ const Board = () => {
       
         if(isSelected) classArray.push('selected-cell')
         if(disabled) classArray.push('disabled')
+        if (!isCustomBoard && value && actualBoard[rowIndex][colIndex] === 0 && solvedBoard?.[rowIndex][colIndex] !== value) classArray.push('incorrect')
         if(isSelectedRow || isSelectedColumn ) classArray.push('selected')
         {
           const row = selectedCell?.row
@@ -92,8 +93,9 @@ const Board = () => {
   })
 
   return(
-    <div className="board" onKeyDown={handleKeyPress} tabIndex={0}>
+    <div className={`board ${isPaused ? 'board-paused' : ''}`} onKeyDown={handleKeyPress} tabIndex={0}>
         {cells}
+        {isPaused && <div className="pause-cover">Game paused</div>}
     </div>
   )
 }

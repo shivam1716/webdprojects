@@ -20,6 +20,9 @@ const BoardState = (props) => {
             draft.selectedCell = newBoard.selectedCell;
             draft.isCustomBoard = newBoard.isCustomBoard;
             draft.difficulty = newBoard.difficulty;
+            draft.solvedBoard = newBoard.solvedBoard;
+            draft.mistakes = 0;
+            draft.isPaused = false;
           });
 
         case 'SET_SELECTED_CELL':
@@ -30,7 +33,11 @@ const BoardState = (props) => {
         case 'SET_CELL_VALUE':
           return produce(state, (draft) => {
             const { row, col, value } = action.payload;
-            draft.currentBoard[row][col] = parseInt(value) || 0;
+            const parsedValue = parseInt(value) || 0;
+            if (parsedValue && draft.currentBoard[row][col] !== parsedValue && draft.solvedBoard[row][col] !== parsedValue) {
+              draft.mistakes += 1;
+            }
+            draft.currentBoard[row][col] = parsedValue;
           });
 
         case 'NEW_CUSTOM_GAME':
@@ -40,6 +47,9 @@ const BoardState = (props) => {
             draft.actualBoard = action.payload;
             draft.currentBoard = action.payload;
             draft.difficulty = 'Custom';
+            draft.solvedBoard = null;
+            draft.mistakes = 0;
+            draft.isPaused = false;
           });
 
         case 'SET_CUSTOM_BOARD':
@@ -65,6 +75,11 @@ const BoardState = (props) => {
             draft.gameWon = true;
           });  
 
+        case 'TOGGLE_PAUSE':
+          return produce(state, (draft) => {
+            draft.isPaused = !draft.isPaused;
+          });
+
         default:
           return state;
       }
@@ -83,7 +98,7 @@ const BoardState = (props) => {
     };
 
     const newCustomGame = () => {
-      let clearBoard = Array(9).fill(Array(9).fill(0));
+      let clearBoard = Array.from({ length: 9 }, () => Array(9).fill(0));
       dispatch({ type: 'NEW_CUSTOM_GAME', payload: clearBoard });
     };
 
@@ -103,10 +118,12 @@ const BoardState = (props) => {
       dispatch({ type: 'SET_GAME_WON'});
     };
 
+    const togglePause = () => dispatch({ type: 'TOGGLE_PAUSE' });
+
     const [state, dispatch] = useReducer(SudokuReducer, initialState)
 
   return (
-    <BoardContext.Provider value={{state, setNewGame, setSelectedCell, setCellValue, newCustomGame, setCustomBoard, handleFinishEntering, setSolvedBoard, setGameWon}}>
+    <BoardContext.Provider value={{state, setNewGame, setSelectedCell, setCellValue, newCustomGame, setCustomBoard, handleFinishEntering, setSolvedBoard, setGameWon, togglePause}}>
         {props.children}
     </BoardContext.Provider>
   )

@@ -5,10 +5,11 @@ import { BsFillEraserFill } from 'react-icons/bs'
 const Keyboard = () => {
 
   const {state, setCellValue, setCustomBoard} = useContext(BoardContext)
-  const {actualBoard, currentBoard, gameWon, selectedCell, isCustomBoard} = state;
+  const {actualBoard, currentBoard, gameWon, selectedCell, isCustomBoard, isPaused} = state;
 
   const handleKeyClick = (value) => {
-    let {row, col} = selectedCell || {};
+    if (isPaused || gameWon || !selectedCell) return;
+    let {row, col} = selectedCell;
     if(currentBoard[row][col] === value) value='-'; // Remove the value if its already same
     if(row !== undefined && isCustomBoard) setCustomBoard(value);
     else if (actualBoard[row][col] === 0) setCellValue(row, col, value); // prevent from modifying the actual board

@@ -67,16 +67,28 @@ function removeCells(grid, emptyCells) {
 
 function newGame(numEmptyCells) {
     const sudokuGrid = generateSudokuGrid(numEmptyCells);
+    const solvedBoard = sudokuGrid.map((row) => [...row]);
+    solve(solvedBoard);
     const difficulty = {
       40: 'Easy',
       50: 'Medium',
       60: 'Hard',
+      64: 'Expert',
     };
 
-    return {actualBoard:sudokuGrid, currentBoard:sudokuGrid, difficulty:difficulty[numEmptyCells] ,gameWon:false, selectedCell:null, isCustomBoard:false}
+    return {
+      actualBoard: sudokuGrid.map((row) => [...row]),
+      currentBoard: sudokuGrid.map((row) => [...row]),
+      solvedBoard,
+      difficulty: difficulty[numEmptyCells],
+      gameWon: false,
+      selectedCell: null,
+      isCustomBoard: false,
+      mistakes: 0,
+      isPaused: false,
+    }
 }
 
 
 
 export {solve, newGame};
-

@@ -8,13 +8,13 @@ const Timer = () => {
 
   useEffect(() => {
     let timer 
-    if (isTimerRunning) {
+    if (isTimerRunning && !state.isPaused) {
         timer = setInterval(() => {
           setCurrentTime(prevTime => prevTime + 1);
         }, 1000);
       }
     return () => { clearInterval(timer); };
-  }, [setCurrentTime, isTimerRunning]);
+  }, [isTimerRunning, state.isPaused]);
 
   useEffect(() => {
     if (state.gameWon) {
@@ -32,11 +32,9 @@ const Timer = () => {
   };
 
   return (
-    <div className='time-box'>
-      <div className='time-header'>Time</div>
-      <div>
-      {formatTime(currentTime)}
-      </div>
+    <div className='stat-card time-box'>
+      <div className='stat-label'>Time {state.isPaused && '· Paused'}</div>
+      <div className='stat-value'>{formatTime(currentTime)}</div>
     </div>
   );
 
