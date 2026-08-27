@@ -40,12 +40,12 @@ const UserDataCollect = () => {
   const [projectData, setProjectData] = useState({
     projectTitles: {
       pTitle1:
-        userData?.projectData?.projectTitles?.pTitle1 || "Project Title 1",
+        userData?.projectData?.projectTitles?.pTitle1 || "Resume Builder",
     },
     projectDesc: {
       pDescription1:
         userData?.projectData?.projectDesc?.pDescription1 ||
-        "Project Description 1",
+        "Built a responsive resume editor, Added live preview and PDF export",
     },
   });
 
@@ -53,22 +53,22 @@ const UserDataCollect = () => {
     educationTitles: {
       eTitle1:
         userData?.educationData?.educationTitles?.eTitle1 ||
-        "Education Title 1",
+        "Bachelor of Technology in Computer Science",
     },
     educationDesc: {
       eDescription1:
         userData?.educationData?.educationDesc?.eDescription1 ||
-        "Education Description 1",
+        "2022 – 2026, CGPA: 8.5",
     },
   });
 
   const [workData, setWorkData] = useState({
     workTitles: {
-      wTitle1: userData?.workData?.workTitles?.wTitle1 || "Work Title 1",
+      wTitle1: userData?.workData?.workTitles?.wTitle1 || "Frontend Developer Intern",
     },
     workDesc: {
       wDescription1:
-        userData?.workData?.workDesc?.wDescription1 || "Work Description 1",
+        userData?.workData?.workDesc?.wDescription1 || "Developed responsive interfaces, Collaborated with cross-functional teams",
     },
   });
 
@@ -76,20 +76,20 @@ const UserDataCollect = () => {
     profileImage:
       userData?.personalData?.profileImage ||
       "https://www.w3schools.com/howto/img_avatar.png",
-    name: userData?.personalData?.name || "Your Name",
+    name: userData?.personalData?.name || "Shivam Singh",
     summary:
       userData?.personalData?.summary ||
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    profile: userData?.personalData?.profile || "Work profile",
-    address: userData?.personalData?.address || "Address line",
-    phone: userData?.personalData?.phone || "Phone Number",
-    email: userData?.personalData?.email || "Email Address",
-    skill: userData?.personalData?.skill || "Your, Skills, are, shown, here",
+      "Results-driven full-stack developer focused on accessible, high-performance web experiences.",
+    profile: userData?.personalData?.profile || "Full Stack Developer",
+    address: userData?.personalData?.address || "New Delhi, India",
+    phone: userData?.personalData?.phone || "+91 98765 43210",
+    email: userData?.personalData?.email || "shivam.singh@example.com",
+    skill: userData?.personalData?.skill || "React, JavaScript, Node.js, HTML, CSS, Git",
   });
   const [awardData, setAwardData] = useState({
     awards:
       userData?.awardData?.awards ||
-      "Certificate of Appreciation - 2019, Certificate of Appreciation - 2018",
+      "Best Project Award - 2025, Certificate of Appreciation - 2024",
   });
 
   // To Add Personal Data to the State
@@ -106,14 +106,13 @@ const UserDataCollect = () => {
   // To Add Project Data to the State
   const handleChangeProject = (e) => {
     const { name, value, id } = e.target;
-    let tempProjectData = projectData;
-    if (name.includes("pName")) {
-      tempProjectData["projectTitles"][id] = value;
-    } else {
-      tempProjectData["projectDesc"][id] = value;
-    }
-    setProjectData({ ...projectData, tempProjectData });
-    setThemeData({ ...themeData, projectData: projectData });
+    setProjectData((current) => ({
+      ...current,
+      [name.includes("pName") ? "projectTitles" : "projectDesc"]: {
+        ...current[name.includes("pName") ? "projectTitles" : "projectDesc"],
+        [id]: value,
+      },
+    }));
   };
 
   const handleProjectClick = (e) => {
@@ -143,22 +142,20 @@ const UserDataCollect = () => {
         </FormControl>
       </>
     );
-    let arr = projArrTemplate;
-    arr.push(template);
-    setProjArrTemplate(arr);
+    setProjArrTemplate((current) => [...current, template]);
     setProjectCount(i);
   };
 
   // To Add Education Data to the State
   const handleChangeEducation = (e) => {
     const { name, value, id } = e.target;
-    let tempEducationData = educationData;
-    if (name.includes("eName")) {
-      tempEducationData["educationTitles"][id] = value;
-    } else {
-      tempEducationData["educationDesc"][id] = value;
-    }
-    setEducationData({ ...educationData }, tempEducationData);
+    setEducationData((current) => ({
+      ...current,
+      [name.includes("eName") ? "educationTitles" : "educationDesc"]: {
+        ...current[name.includes("eName") ? "educationTitles" : "educationDesc"],
+        [id]: value,
+      },
+    }));
   };
   const handleEducationClick = (e) => {
     e.preventDefault();
@@ -185,22 +182,20 @@ const UserDataCollect = () => {
         </FormControl>
       </>
     );
-    let arr = educationArrTemplate;
-    arr.push(template);
-    setEducationArrTemplate(arr);
+    setEducationArrTemplate((current) => [...current, template]);
     setEducationCount(i);
   };
 
   // To Add Work Data to the State
   const handleChangeWork = (e) => {
     const { name, value, id } = e.target;
-    let tempWorkData = workData;
-    if (name.includes("wName")) {
-      tempWorkData["workTitles"][id] = value;
-    } else {
-      tempWorkData["workDesc"][id] = value;
-    }
-    setWorkData({ ...workData }, tempWorkData);
+    setWorkData((current) => ({
+      ...current,
+      [name.includes("wName") ? "workTitles" : "workDesc"]: {
+        ...current[name.includes("wName") ? "workTitles" : "workDesc"],
+        [id]: value,
+      },
+    }));
   };
   const handleWorkClick = (e) => {
     e.preventDefault();
@@ -227,9 +222,7 @@ const UserDataCollect = () => {
         </FormControl>
       </>
     );
-    let arr = workArrTemplate;
-    arr.push(template);
-    setWorkArrTemplate(arr);
+    setWorkArrTemplate((current) => [...current, template]);
     setWorkCount(i);
   };
 
@@ -240,22 +233,21 @@ const UserDataCollect = () => {
   };
 
   useEffect(() => {
-    setThemeData({
-      ...themeData,
+    setThemeData((current) => ({
+      ...current,
       personalData,
       projectData,
       educationData,
       workData,
       awardData,
-    });
+    }));
   }, [
-    themeData,
     personalData,
-    setThemeData,
     projectData,
     educationData,
     workData,
     awardData,
+    setThemeData,
   ]);
 
   //handles logic of localStorage
@@ -267,11 +259,12 @@ const UserDataCollect = () => {
     <>
       <div id="form-collect">
         {/* Personal Details Area  */}
-        <div id="form-personal" className="mb-2">
+        <div id="personal-info" className="form-section mb-2">
           <Heading as="h4" size="md" className="mb-2">
             Personal Details
           </Heading>
           <hr />
+          <p className="section-helper">Start with the contact details and headline recruiters see first.</p>
 
           <FormControl isRequired className="my-2">
             <div className="file">
@@ -298,7 +291,7 @@ const UserDataCollect = () => {
           <FormControl isRequired className="my-2">
             <Input
               name="name"
-              value={personalData.name !== "Your Name" ? personalData.name : ""}
+              value={personalData.name}
               onChange={handleChangePersonal}
               type={"text"}
               placeholder="Your Name"
@@ -307,12 +300,7 @@ const UserDataCollect = () => {
           <FormControl isRequired className="my-2">
             <Input
               name="summary"
-              value={
-                personalData.summary !==
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-                  ? personalData.summary
-                  : ""
-              }
+              value={personalData.summary}
               onChange={handleChangePersonal}
               type={"text"}
               placeholder="Your Summary"
@@ -321,11 +309,7 @@ const UserDataCollect = () => {
           <FormControl isRequired className="my-2">
             <Input
               name="profile"
-              value={
-                personalData.profile !== "Work profile"
-                  ? personalData.profile
-                  : ""
-              }
+              value={personalData.profile}
               onChange={handleChangePersonal}
               type={"text"}
               placeholder="Work Profile"
@@ -334,11 +318,7 @@ const UserDataCollect = () => {
           <FormControl isRequired className="my-2">
             <Input
               name="address"
-              value={
-                personalData.address !== "Address line"
-                  ? personalData.address
-                  : ""
-              }
+              value={personalData.address}
               onChange={handleChangePersonal}
               type={"text"}
               placeholder="Address"
@@ -347,9 +327,7 @@ const UserDataCollect = () => {
           <FormControl isRequired className="my-2">
             <Input
               name="phone"
-              value={
-                personalData.phone !== "Phone Number" ? personalData.phone : ""
-              }
+              value={personalData.phone}
               onChange={handleChangePersonal}
               type={"tel"}
               placeholder="Phone number"
@@ -358,9 +336,7 @@ const UserDataCollect = () => {
           <FormControl isRequired className="my-2">
             <Input
               name="email"
-              value={
-                personalData.email !== "Email Address" ? personalData.email : ""
-              }
+              value={personalData.email}
               onChange={handleChangePersonal}
               type={"email"}
               placeholder="Email id"
@@ -369,20 +345,17 @@ const UserDataCollect = () => {
         </div>
 
         {/* Skills Area  */}
-        <div id="form-personal" className="mb-2">
+        <div id="skills" className="form-section mb-2">
           <Heading as="h4" size="md" className="my-2">
             Technical Skills
           </Heading>
           <hr />
+          <p className="section-helper">Keep this focused on tools and strengths relevant to your target role.</p>
 
           <FormControl isRequired className="my-2">
             <Input
               name="skill"
-              value={
-                personalData.skill !== "Your, Skills, are, shown, here"
-                  ? personalData.skill
-                  : ""
-              }
+              value={personalData.skill}
               onChange={handleChangePersonal}
               type={"text"}
               placeholder="Separate skills by comma"
@@ -391,11 +364,12 @@ const UserDataCollect = () => {
         </div>
 
         {/* Education Area  */}
-        <div id="form-personal" className="mb-2">
+        <div id="education" className="form-section mb-2">
           <Heading as="h4" size="md" className="my-2">
             Education
           </Heading>
           <hr />
+          <p className="section-helper">Add your degree, institution, graduation period, and notable academic results.</p>
           <Button
             onClick={handleEducationClick}
             className="my-3 w-100"
@@ -404,6 +378,8 @@ const UserDataCollect = () => {
           >
             Add Education
           </Button>
+          <FormControl className="my-2"><Input id="eTitle1" name="eName" value={educationData.educationTitles.eTitle1} onChange={handleChangeEducation} placeholder="Degree or qualification" /></FormControl>
+          <FormControl className="my-2"><Textarea id="eDescription1" name="eDescription" value={educationData.educationDesc.eDescription1} onChange={handleChangeEducation} placeholder="Institution, dates, results" /></FormControl>
           {educationCount > 0
             ? educationArrTemplate.map((element, index) => (
                 <div key={index}>{element}</div>
@@ -412,7 +388,7 @@ const UserDataCollect = () => {
         </div>
 
         {/* Projects Area  */}
-        <div id="form-personal" className="mb-2">
+        <div id="projects" className="form-section mb-2">
           <div className="d-flex align-items-center justify-content-between">
             <Heading as="h4" size="md" className="my-2">
               Projects
@@ -424,6 +400,7 @@ const UserDataCollect = () => {
             />
           </div>
           <hr />
+          <p className="section-helper">Show projects that demonstrate the skills and results most relevant to your target role.</p>
           <Button
             disabled={checkProj}
             onClick={handleProjectClick}
@@ -433,6 +410,8 @@ const UserDataCollect = () => {
           >
             Add Projects
           </Button>
+          <FormControl className="my-2"><Input disabled={checkProj} id="pTitle1" name="pName" value={projectData.projectTitles.pTitle1} onChange={handleChangeProject} placeholder="Project title" /></FormControl>
+          <FormControl className="my-2"><Textarea disabled={checkProj} id="pDescription1" name="pDescription" value={projectData.projectDesc.pDescription1} onChange={handleChangeProject} placeholder="Use commas to separate highlights" /></FormControl>
           {projectCount > 0
             ? projArrTemplate.map((element, index) => (
                 <div key={index}>{element}</div>
@@ -441,7 +420,7 @@ const UserDataCollect = () => {
         </div>
 
         {/* Work Experience Area  */}
-        <div id="form-personal" className="mb-2">
+        <div id="experience" className="form-section mb-2">
           <div className="d-flex align-items-center justify-content-between">
             <Heading as="h4" size="md" className="my-2">
               Work Experience
@@ -453,6 +432,7 @@ const UserDataCollect = () => {
             />
           </div>
           <hr />
+          <p className="section-helper">Use strong action verbs and quantify results whenever possible.</p>
           <Button
             disabled={checkWork}
             onClick={handleWorkClick}
@@ -462,6 +442,8 @@ const UserDataCollect = () => {
           >
             Add Experience
           </Button>
+          <FormControl className="my-2"><Input disabled={checkWork} id="wTitle1" name="wName" value={workData.workTitles.wTitle1} onChange={handleChangeWork} placeholder="Job title and company" /></FormControl>
+          <FormControl className="my-2"><Textarea disabled={checkWork} id="wDescription1" name="wDescription" value={workData.workDesc.wDescription1} onChange={handleChangeWork} placeholder="Use commas to separate highlights" /></FormControl>
           {workCount > 0
             ? workArrTemplate.map((element, index) => (
                 <div key={index}>{element}</div>
@@ -482,16 +464,12 @@ const UserDataCollect = () => {
             />
           </div>
           <hr />
+          <p className="section-helper">Add recognitions, certifications, or achievements that strengthen your profile.</p>
           <FormControl isRequired className="my-2">
             <Textarea
               name="awards"
               disabled={checkAward}
-              value={
-                awardData.awards !==
-                "Certificate of Appreciation - 2019, Certificate of Appreciation - 2018"
-                  ? awardData.awards
-                  : ""
-              }
+              value={awardData.awards}
               onChange={handleChangeAwards}
               placeholder="Use comma to separate Achievement"
             />

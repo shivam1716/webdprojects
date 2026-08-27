@@ -7,6 +7,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root { --ink: #102a43; --muted: #62748a; --teal: #16847f; --teal-light: #dff7f4; --paper: #f6fafb; }
+body { color: var(--ink); background: #eaf3f5; }
+#root { min-height: 100vh; background: radial-gradient(circle at 8% 15%, rgba(45, 212, 191, .19), transparent 25%), radial-gradient(circle at 88% 8%, rgba(14, 116, 144, .16), transparent 26%), linear-gradient(135deg, rgba(246, 250, 251, .96), rgba(230, 242, 244, .9)), url('./Assets/home-logo.png') center/cover fixed; }
+.App { min-height: 100vh; }
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

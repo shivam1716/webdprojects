@@ -1,4 +1,5 @@
-import { Flex, Container, Heading, Stack, Text, Button, Box } from '@chakra-ui/react';
+import { Flex, Container, Heading, Stack, Text, Button, Box, Badge } from '@chakra-ui/react';
+import { CheckCircleIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import './introduction.css';
 import homeLogo from './../../Assets/home-logo.png'
 import { Image } from '@chakra-ui/react'
@@ -33,7 +34,7 @@ export default function Introduction() {
                 <meta property="og:type" content="website" />
             </Helmet>
 
-            <Container my={{ base: 1.5, md: 16 }} justifyContent={'space-between'} flexDirection={{ base: 'column', md: 'row', sm: 'column' }} display={'flex'} alignItems={'center'} maxW={'7xl'}>
+            <Container className="hero-shell" my={{ base: 5, md: 12 }} justifyContent={'space-between'} flexDirection={{ base: 'column', md: 'row', sm: 'column' }} display={'flex'} alignItems={'center'} maxW={'7xl'}>
                 <Stack
                     width={{ base: '95%', md: '47%' }}
                     textAlign={'center'}
@@ -45,38 +46,38 @@ export default function Introduction() {
                         selectBtn
                             ?
                             <>
+                                <Badge className="hero-eyebrow" colorScheme="teal">Smart resume studio</Badge>
                                 <Heading
                                     fontWeight={600}
                                     fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
                                     lineHeight={'110%'}>
-                                    Your resume in three{' '}
+                                    A resume that feels{' '}
                                     <Text as={'span'} color={'#38B2AC'}>
-                                        easy {' '}
+                                        unmistakably you {' '}
                                     </Text>
-                                    steps
                                 </Heading>
 
-                                <Text color={'gray.500'} maxW={'3xl'}>
-                                    Resume builder tools that assemble well-formatted resume. Through a resume builder, you can create a professional-looking resume in a few easy steps. This resume builder offer different template options, so you can select the template that best fits your needs and style.
+                                <Text className="hero-copy" color={'gray.600'} maxW={'3xl'}>
+                                    Build a clear, modern resume with guided sections, live updates, and templates designed to keep the focus on your experience.
                                 </Text>
 
                                 <Flex _dark={{ color: 'gray.50' }} textAlign={'start'} flexDirection={'column'} w={'full'}>
                                     <Box className='Bullet_Points'>
-                                        <Button>1</Button>
-                                        <Text _dark={{ color: "gray.400" }} color={'gray.900'} fontSize={'xl'}>
-                                            Select a template from our collection.
+                                        <CheckCircleIcon color="teal.400" />
+                                        <Text _dark={{ color: "gray.400" }} color={'gray.800'} fontSize={'md'}>
+                                            Choose a polished layout that fits your story.
                                         </Text>
                                     </Box>
                                     <Box className='Bullet_Points'>
-                                        <Button>2</Button>
-                                        <Text _dark={{ color: "gray.400" }} color={'gray.900'} fontSize={'xl'}>
-                                            Build you resume using our easy to use resume builder.
+                                        <CheckCircleIcon color="teal.400" />
+                                        <Text _dark={{ color: "gray.400" }} color={'gray.800'} fontSize={'md'}>
+                                            Edit confidently with an instant, live preview.
                                         </Text>
                                     </Box>
                                     <Box className='Bullet_Points'>
-                                        <Button>3</Button>
-                                        <Text _dark={{ color: "gray.400" }} color={'gray.900'} fontSize={'xl'}>
-                                            Download your resume.
+                                        <CheckCircleIcon color="teal.400" />
+                                        <Text _dark={{ color: "gray.400" }} color={'gray.800'} fontSize={'md'}>
+                                            Print a professional PDF when you are ready.
                                         </Text>
                                     </Box>
                                 </Flex>
@@ -108,8 +109,9 @@ export default function Introduction() {
                                 className='mb-4'
                                 colorScheme={'teal'}
                                 bg={'#38B2AC'}
-                                _hover={{ bg: '#319795' }}>
-                                Select Template
+                                rightIcon={<ArrowForwardIcon />}
+                                _hover={{ bg: '#237f7a', transform: 'translateY(-2px)' }}>
+                                Start building
                             </Button>
                         </Stack>
                         :

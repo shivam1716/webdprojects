@@ -1,12 +1,18 @@
 .Bullet_Points {
     display: flex;
-    margin: 5px 0px;
+    margin: 9px 0px;
     align-items: center;
+    gap: 10px;
 }
 
 .Bullet_Points p {
     margin: 0px 5px;
 }
+
+.hero-shell { position: relative; padding: clamp(28px, 5vw, 72px) !important; border: 1px solid rgba(148, 163, 184, .2); border-radius: 28px; background: rgba(255, 255, 255, .84); box-shadow: 0 24px 70px rgba(15, 23, 42, .12); overflow: hidden; }
+.hero-shell::after { content: ''; position: absolute; width: 400px; height: 400px; right: -180px; bottom: -220px; background: radial-gradient(circle, rgba(45, 212, 191, .22), transparent 68%); pointer-events: none; }
+.hero-eyebrow { padding: 7px 12px !important; border-radius: 999px; letter-spacing: .08em; font-size: .7rem !important; }
+.hero-copy { font-size: 1.05rem; line-height: 1.8; }
 
 
 .templatesList {

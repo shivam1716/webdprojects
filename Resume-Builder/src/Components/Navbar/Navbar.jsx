@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, IconButton, useDisclosure, useColorMode, useColorModeValue, Stack, Button } from '@chakra-ui/react';
+import { Box, Flex, HStack, IconButton, useDisclosure, useColorMode, Stack, Button, Text } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link as ReachLink } from 'react-router-dom'
 import logo from './../../Assets/logo.png';
@@ -10,10 +10,10 @@ export default function Navbar() {
 
     return (
         <>
-            <Box id='navbar' bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
-                <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+            <Box id='navbar' className="app-nav" px={4}>
+                <Flex h={18} maxW="7xl" mx="auto" alignItems={'center'} justifyContent={'space-between'}>
                     <ReachLink to='/'>
-                        <Box><img style={{ height: '44px' }} className='logo' src={logo} alt="logo" /></Box>
+                        <HStack spacing={2}><img style={{ height: '38px' }} className='logo' src={logo} alt="Resume Studio" /><Text className="brand-text">Resume Studio</Text></HStack>
                     </ReachLink>
 
                     <HStack spacing={8} alignItems={'center'}>
@@ -21,10 +21,10 @@ export default function Navbar() {
                             as={'nav'}
                             spacing={4}
                             display={{ base: 'none', md: 'flex' }}>
-                            <ReachLink px={2} py={1} rounded={'md'} _hover={{ textDecoration: 'none', bg: 'gray.200' }} to={'/'} >Home </ReachLink>
-                            <ReachLink px={2} py={1} rounded={'md'} _hover={{ textDecoration: 'none', bg: 'gray.200' }} to={'/about'}> About</ReachLink>
+                            <ReachLink className="nav-link" to={'/'}>Workspace</ReachLink>
+                            <ReachLink className="nav-link" to={'/about'}>About</ReachLink>
                         </HStack>
-                        <Button onClick={toggleColorMode}>
+                        <Button className="mode-button" aria-label="Toggle color mode" onClick={toggleColorMode}>
                             {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
                         </Button>
                     </HStack>
@@ -42,8 +42,8 @@ export default function Navbar() {
                 {isOpen ? (
                     <Box pb={4} display={{ md: 'none' }}>
                         <Stack as={'nav'} spacing={4}>
-                            <ReachLink px={2} py={1} rounded={'md'} _hover={{ textDecoration: 'none', bg: 'gray.200' }} to={'/'} >Home </ReachLink>
-                            <ReachLink px={2} py={1} rounded={'md'} _hover={{ textDecoration: 'none', bg: 'gray.200' }} to={'/about'}> About</ReachLink>
+                            <ReachLink className="nav-link" to={'/'}>Workspace</ReachLink>
+                            <ReachLink className="nav-link" to={'/about'}>About</ReachLink>
                         </Stack>
                     </Box>
                 ) : null}

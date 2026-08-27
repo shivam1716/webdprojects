@@ -5,13 +5,40 @@
     }
 }
 
-#theme-box-border {
+#preview {
     height: fit-content;
     min-width: 50%;
+    position: relative;
+    padding-top: 34px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
 }
+
+.builder-workspace { min-height: 100vh; display: flex; background: #f7fafc; }
+.builder-content { width: calc(100% - 220px); }
+
+#main-box { max-width: 1480px; gap: 24px; padding: 0 24px 28px; }
+.builder-header { max-width: 1480px; margin: 38px auto 24px; padding: 0 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.builder-header h1 { margin: 7px 0; color: #102a43; font-weight: 750; letter-spacing: -.035em; font-size: clamp(1.8rem, 3vw, 2.6rem); }
+.builder-header p { color: #62748a; margin: 0; }
+.save-status { border: 1px solid #d8e4e7; background: #f5fffe; padding: 10px 14px; border-radius: 999px; color: #36716d; font-size: .86rem; white-space: nowrap; }
+.save-status span { display: inline-block; width: 8px; height: 8px; background: #2fb89e; border-radius: 50%; margin-right: 8px; }
+.preview-label { position: absolute; inset: 0 0 auto; z-index: 3; padding: 8px 16px; background: #102a43; color: #e6fffb; text-transform: uppercase; letter-spacing: .12em; font-size: .68rem; font-weight: 700; }
+.builder-actions { padding-bottom: 24px; }
+.builder-insights { max-width: 1480px; margin: 0 auto 25px; padding: 0 24px; display: grid; grid-template-columns: minmax(280px, .75fr) minmax(320px, 1.25fr); gap: 16px; }
+.completion-card, .quality-card { background: rgba(255,255,255,.9); border: 1px solid #dde9ec; border-radius: 14px; padding: 17px 19px; box-shadow: 0 8px 22px rgba(15, 42, 67, .06); }
+.completion-card > div:first-child { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; color: #183b56; }
+.completion-card strong, .quality-card strong { color: #183b56; font-size: .95rem; }
+.eyebrow { font-size: .7rem; color: #66839a; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+.completion-card p, .quality-card p { font-size: .82rem; margin: 9px 0 0; color: #66839a; }
+.quality-card { display: flex; align-items: flex-start; gap: 12px; }
 
 #spinner {
     position: absolute !important;
     top: 50vh;
     left: 50vw;
 }
+
+@media only screen and (max-width: 700px) { #main-box { padding: 0 14px 22px; } .builder-header { margin-top: 24px; padding: 0 16px; align-items: flex-start; flex-direction: column; } .builder-insights { padding: 0 16px; grid-template-columns: 1fr; } }
+@media only screen and (max-width: 850px) { .builder-content { width: 100%; padding-bottom: 60px; } }

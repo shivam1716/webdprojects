@@ -4,7 +4,6 @@ import './App.css';
 import ResumeState from './Context/ResumeState';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home/Home';
-import Navbar from './Components/Navbar/Navbar';
 import About from './Pages/About/About';
 
 function App() {
@@ -22,7 +21,6 @@ function App() {
           <meta property="og:url" content="https://quick-resume.netlify.app/" />
           <meta property="og:type" content="website" />
         </Helmet>
-        <Navbar />
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/home" element={<Home />} />
