@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Check,
@@ -8,6 +8,10 @@ import {
   Sparkles,
   Brain,
   AlertTriangle,
+  Download,
+  Share2,
+  Command,
+  Search,
 } from "lucide-react";
 
 import Sidebar from "./components/Sidebar";
@@ -28,11 +32,17 @@ import WorkspacePage from "./components/WorkspacePage";
 
 import {
   analyzeImage,
+  isRetryableAnalysisError,
 } from "./services/analysisService";
 
 import {
   executeAction,
 } from "./services/actionService";
+import { saveAnalysisToHistory } from "./services/historyService";
+import { downloadAnalysisReport, shareAnalysisReport } from "./services/reportService";
+import { saveMemory } from "./services/memoryService";
+import { startReminderScheduler } from "./services/reminderService";
+import { enqueueScan, queuedScanToFile, removeQueuedScan } from "./services/scanQueueService";
 
 export default function App() {
   const [page, setPage] = useState("dashboard");
@@ -59,6 +69,57 @@ export default function App() {
     useState("");
 
   const [analysisError, setAnalysisError] = useState("");
+  const [backendStatus, setBackendStatus] = useState("checking");
+  const [backendLatency, setBackendLatency] = useState(null);
+  const [commandOpen, setCommandOpen] = useState(false);
+
+  useEffect(() => {
+    const handleShortcut = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setCommandOpen(true);
+      }
+      if (event.key === "Escape") setCommandOpen(false);
+    };
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
+
+  useEffect(() => {
+    const updateSpotlight = (event) => {
+      document.documentElement.style.setProperty("--pointer-x", `${event.clientX}px`);
+      document.documentElement.style.setProperty("--pointer-y", `${event.clientY}px`);
+    };
+    window.addEventListener("pointermove", updateSpotlight, { passive: true });
+    return () => window.removeEventListener("pointermove", updateSpotlight);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const checkBackend = () => {
+      const startedAt = performance.now();
+      return fetch("/api/health")
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error()))
+      .then((health) => {
+        if (!active) return;
+        setBackendStatus(health.aiConfigured ? "online" : "unconfigured");
+        setBackendLatency(Math.round(performance.now() - startedAt));
+      })
+      .catch(() => {
+        if (!active) return;
+        setBackendStatus("offline");
+        setBackendLatency(null);
+      });
+    };
+    checkBackend();
+    const interval = window.setInterval(checkBackend, 30000);
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => startReminderScheduler(), []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -79,7 +140,7 @@ export default function App() {
     return <Login onLogin={signIn} />;
   }
 
-  const analyze = async (file) => {
+  const analyze = async (file, mode, language, queuedId = null) => {
     setLoading(true);
     setAnalysis(null);
     setActionMessage("");
@@ -87,12 +148,33 @@ export default function App() {
     setStep("explain");
 
     try {
-      const result = await analyzeImage(file);
+      const result = await analyzeImage(file, mode, language);
+      saveAnalysisToHistory(result);
+      if (queuedId) removeQueuedScan(queuedId);
       setAnalysis(result);
     } catch (error) {
-      setAnalysisError(error.message || "Could not analyze this image. Please try again.");
+      if (!queuedId && isRetryableAnalysisError(error)) {
+        try {
+          await enqueueScan(file, mode, language);
+          setAnalysisError("The AI service is unavailable. Your capture is safely queued and will be ready to retry from the dashboard.");
+        } catch (queueError) {
+          setAnalysisError(queueError.message || "Could not save this capture for later.");
+        }
+      } else {
+        setAnalysisError(error.message || "Could not analyze this image. Please try again.");
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const retryQueuedScan = (item) => {
+    try {
+      setPage("analyze");
+      return analyze(queuedScanToFile(item), item.mode, item.language, item.id);
+    } catch (error) {
+      setAnalysisError(error.message || "This queued capture could not be reopened.");
+      return Promise.resolve();
     }
   };
 
@@ -113,6 +195,11 @@ export default function App() {
     );
   };
 
+  const rememberInsight = (insight) => {
+    saveMemory(insight, analysis);
+    setActionMessage(`${insight.label} saved to Reality Memory.`);
+  };
+
   return (
     <div className="app-shell">
       <Sidebar
@@ -121,6 +208,7 @@ export default function App() {
         theme={theme}
         setTheme={setTheme}
         user={user}
+        backendStatus={backendStatus}
       />
 
       <main className="main">
@@ -139,10 +227,17 @@ export default function App() {
             <ShieldCheck size={14} />
             Privacy first
           </div>
+
+          <button className="command-trigger" onClick={() => setCommandOpen(true)} aria-label="Open command palette">
+            <Command size={14} />
+            <span>Quick switch</span>
+            <kbd>⌘K</kbd>
+          </button>
+          <LiveClock />
         </header>
 
         <div className="content">
-          {page === "dashboard" && <WorkspacePage type="dashboard" setPage={setPage} />}
+          {page === "dashboard" && <WorkspacePage type="dashboard" setPage={setPage} onRetryScan={retryQueuedScan} />}
 
           {page === "analyze" && (
             <>
@@ -238,6 +333,7 @@ export default function App() {
                   setEvidence={setEvidence}
                   performAction={performAction}
                   actionMessage={actionMessage}
+                  onRemember={rememberInsight}
                 />
               )}
             </>
@@ -296,7 +392,7 @@ export default function App() {
 
           <div>
             <Brain size={14} />
-            Context aware
+            {backendStatus === "online" ? `Context aware · ${backendLatency ?? "—"} ms` : "AI reconnecting"}
           </div>
         </div>
       </main>
@@ -307,8 +403,43 @@ export default function App() {
           onClose={() => setEvidence(null)}
         />
       )}
+
+      {commandOpen && <CommandPalette page={page} setPage={setPage} onClose={() => setCommandOpen(false)} />}
     </div>
   );
+}
+
+function CommandPalette({ page, setPage, onClose }) {
+  const [query, setQuery] = useState("");
+  const inputRef = useRef(null);
+  const commands = [
+    ["dashboard", "Dashboard", "Overview of your reality"],
+    ["analyze", "New scan", "Capture and understand something"],
+    ["ask", "Ask RealityOS", "Ask a contextual question"],
+    ["history", "History", "Review and compare scans"],
+    ["memory", "Reality Memory", "Search remembered facts"],
+    ["tasks", "Tasks", "Continue your action list"],
+    ["places", "Saved places", "Open location-aware directions"],
+  ];
+  const results = commands.filter(([, label, description]) => `${label} ${description}`.toLowerCase().includes(query.toLowerCase()));
+
+  useEffect(() => inputRef.current?.focus(), []);
+
+  const choose = (nextPage) => {
+    setPage(nextPage);
+    onClose();
+  };
+
+  return <div className="modal-backdrop palette-backdrop" role="presentation" onMouseDown={onClose}><section className="command-palette" role="dialog" aria-modal="true" aria-label="RealityOS command palette" onMouseDown={(event) => event.stopPropagation()}><div className="command-search"><Search size={17} /><input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Jump to a RealityOS view…" aria-label="Search commands" /></div><div className="command-results">{results.map(([id, label, description]) => <button key={id} className={`command-item ${page === id ? "current" : ""}`} onClick={() => choose(id)}><span><strong>{label}</strong><small>{description}</small></span><kbd>↵</kbd></button>)}{!results.length && <p className="command-empty">No matching views.</p>}</div><div className="command-footer"><span><kbd>Esc</kbd> close</span><span><kbd>↑↓</kbd> browse</span></div></section></div>;
+}
+
+function LiveClock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+  return <time className="live-clock" dateTime={now.toISOString()}><span className="live-clock-dot" />{now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</time>;
 }
 
 function Feature({ title, text }) {
@@ -331,23 +462,47 @@ function AnalysisScreen({
   setEvidence,
   performAction,
   actionMessage,
+  onRemember,
 }) {
+  const [reportMessage, setReportMessage] = useState("");
+
+  const shareReport = async () => {
+    try {
+      setReportMessage(await shareAnalysisReport(analysis));
+    } catch (error) {
+      if (error.name !== "AbortError") setReportMessage("Could not share this snapshot.");
+    }
+  };
+
   return (
     <>
       <div className="result-header">
-        <button
-          className="back-button"
-          onClick={reset}
-        >
-          <RotateCcw size={15} />
-          New scan
-        </button>
+        <div className="result-header-left">
+          <button
+            className="back-button"
+            onClick={reset}
+          >
+            <RotateCcw size={15} />
+            New scan
+          </button>
 
-        <div className="analysis-complete">
-          <span />
-          Analysis complete
+          <div className="analysis-complete">
+            <span />
+            Analysis complete
+          </div>
+        </div>
+
+        <div className="result-tools">
+          <button className="result-tool" onClick={() => downloadAnalysisReport(analysis)} title="Download snapshot" aria-label="Download snapshot">
+            <Download size={15} />
+          </button>
+          <button className="result-tool" onClick={shareReport} title="Share snapshot" aria-label="Share snapshot">
+            <Share2 size={15} />
+          </button>
         </div>
       </div>
+
+      {reportMessage && <p className="report-message" role="status">{reportMessage}</p>}
 
       <Workflow
         active={step}
@@ -388,6 +543,7 @@ function AnalysisScreen({
               analysis={analysis}
               setStep={setStep}
               setEvidence={setEvidence}
+              onRemember={onRemember}
             />
           )}
 
@@ -486,6 +642,7 @@ function ExplainStep({
   analysis,
   setStep,
   setEvidence,
+  onRemember,
 }) {
   return (
     <div className="step-content">
@@ -526,6 +683,7 @@ function ExplainStep({
               key={insight.id}
               insight={insight}
               onEvidence={setEvidence}
+              onRemember={onRemember}
             />
           )
         )}

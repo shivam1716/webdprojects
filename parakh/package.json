@@ -1,0 +1,29 @@
+{
+  "name": "parakh-real-data",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "prepare:data": "node --max-old-space-size=2048 scripts/bootstrap-data.mjs",
+    "prepare:india": "python scripts/prepare-india-data.py",
+    "dev": "vite",
+    "prepare:data:download": "OLIST_ALLOW_DOWNLOAD=1 npm run prepare:data",
+    "prebuild": "npm run prepare:data",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.468.0",
+    "qrcode.react": "^4.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.1.1",
+    "vite": "^6.0.5",
+    "tailwindcss": "^3.4.17",
+    "postcss": "^8.4.49",
+    "autoprefixer": "^10.4.20"
+  },
+  "devDependencies": {}
+}

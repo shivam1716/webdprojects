@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fruit Ninja: Hand Slash</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <!-- Webcam background -->
+    <video id="webcam" autoplay playsinline></video>
+    
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- UI Overlay -->
+    <div id="ui-layer">
+      <!-- HUD (Heads Up Display) -->
+      <div id="hud" class="hidden">
+        <div class="hud-top">
+          <div class="score-container">SCORE: <span id="score">0</span></div>
+          <div class="combo-container hidden">COMBO x<span id="combo">1</span></div>
+          <div class="lives-container">
+            <span class="life active">❤️</span>
+            <span class="life active">❤️</span>
+            <span class="life active">❤️</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Screen -->
+      <div id="start-screen" class="screen">
+        <h1 class="title">🍉 FRUIT NINJA</h1>
+        <h2 class="subtitle">Hand-Controlled Edition</h2>
+        <p class="instruction">Allow camera access and slash the fruits with your hand.</p>
+        <p class="privacy-note">Camera processing happens locally in your browser. No data is saved.</p>
+        <button id="btn-start" class="btn primary">START GAME</button>
+        <p id="camera-error" class="error-msg hidden">Camera access denied or unavailable.</p>
+        <button id="btn-retry-cam" class="btn secondary hidden">Try Again</button>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="game-over-screen" class="screen hidden">
+        <h1 class="title">GAME OVER</h1>
+        <div class="scores">
+          <p>Score: <span id="final-score">0</span></p>
+          <p>Best: <span id="best-score">0</span></p>
+        </div>
+        <button id="btn-play-again" class="btn primary">PLAY AGAIN</button>
+        <button id="btn-main-menu" class="btn secondary">MAIN MENU</button>
+      </div>
+
+      <!-- Tracking Lost Message -->
+      <div id="tracking-lost" class="hidden">
+        <p>👋 Show your hand to start slicing!</p>
+      </div>
+
+      <!-- Controls -->
+      <div id="controls-layer">
+        <label>
+          <input type="checkbox" id="debug-toggle" />
+          Show Hand Tracking
+        </label>
+        <label>
+          <input type="checkbox" id="sound-toggle" checked />
+          Sound
+        </label>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

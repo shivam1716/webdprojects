@@ -1,10 +1,12 @@
 import { mockAnalysis } from "../data/mockAnalysis";
 
-export async function analyzeImage(image) {
+export async function analyzeImage(image, mode = "auto", language = navigator.language || "en-US") {
   const base64 = await fileToBase64(image);
   const response = await api("/api/analyze", {
     imageBase64: base64,
     mimeType: image.type || "image/jpeg",
+    mode,
+    language,
   });
 
   return normalizeAnalysis(response.analysis);
@@ -15,6 +17,10 @@ export async function askReality(question, analysis) {
   return response.answer;
 }
 
+export function isRetryableAnalysisError(error) {
+  return error?.name === "TypeError" || error?.status === 429 || error?.status >= 500;
+}
+
 async function api(url, body) {
   const response = await fetch(url, {
     method: "POST",
@@ -22,7 +28,11 @@ async function api(url, body) {
     body: JSON.stringify(body),
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || `Request failed (${response.status}).`);
+  if (!response.ok) {
+    const error = new Error(data.error || `Request failed (${response.status}).`);
+    error.status = response.status;
+    throw error;
+  }
   return data;
 }
 

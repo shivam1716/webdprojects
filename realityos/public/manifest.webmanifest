@@ -1,0 +1,12 @@
+{
+  "name": "RealityOS",
+  "short_name": "RealityOS",
+  "description": "See it. Understand it. Act on it.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08090d",
+  "theme_color": "#7047e9",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

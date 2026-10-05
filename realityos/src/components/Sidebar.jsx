@@ -19,6 +19,7 @@ export default function Sidebar({
   theme,
   setTheme,
   user,
+  backendStatus = "checking",
 }) {
   const items = [
     {
@@ -121,8 +122,8 @@ export default function Sidebar({
         </div>
 
         <div className="system-status">
-          <span />
-          AI system online
+          <span className={`system-status-dot ${backendStatus}`} />
+          {backendStatus === "online" ? "AI system online" : backendStatus === "checking" ? "Checking AI system" : "AI system offline"}
         </div>
       </div>
     </aside>

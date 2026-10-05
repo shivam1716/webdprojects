@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Dark circular background -->
+  <circle cx="50" cy="50" r="48" fill="#111111" stroke="#f72585" stroke-width="4"/>
+  
+  <g transform="translate(50, 50) rotate(-15)">
+    <!-- Pink Flower Petals -->
+    <path d="M0 -15 C20 -40, 40 -20, 15 0 C40 20, 20 40, 0 15 C-20 40, -40 20, -15 0 C-40 -20, -20 -40, 0 -15" fill="#f72585" opacity="0.9" />
+    
+    <!-- Purple Flower Petals (rotated) -->
+    <path d="M0 -15 C20 -40, 40 -20, 15 0 C40 20, 20 40, 0 15 C-20 40, -40 20, -15 0 C-40 -20, -20 -40, 0 -15" fill="#7209b7" opacity="0.9" transform="rotate(45)" />
+    
+    <!-- Yellow Magic Spark / Star inside -->
+    <path d="M0 -25 L4 -6 L25 0 L4 6 L0 25 L-4 6 L-25 0 L-4 -6 Z" fill="#ffcc00" />
+    
+    <!-- White center core -->
+    <circle cx="0" cy="0" r="3" fill="#ffffff" />
+  </g>
+</svg>

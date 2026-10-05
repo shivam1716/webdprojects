@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const app = express();
 const port = Number(process.env.PORT || 8787);
-const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+const model = process.env.GEMINI_MODEL || "gemini-pro-latest";
 const key = process.env.GEMINI_API_KEY;
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -16,7 +16,7 @@ app.get("/api/health", (_request, response) => {
 });
 
 app.post("/api/analyze", async (request, response, next) => {
-  const { imageBase64, mimeType } = request.body;
+  const { imageBase64, mimeType, mode = "auto", language = "en-US" } = request.body;
   if (!imageBase64 || !mimeType) {
     return response.status(400).json({ error: "An image is required." });
   }
@@ -24,7 +24,7 @@ app.post("/api/analyze", async (request, response, next) => {
   try {
     const text = await generate([
       { inlineData: { mimeType, data: imageBase64 } },
-      { text: analysisPrompt },
+      { text: buildAnalysisPrompt(mode, /^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(language) ? language : "en-US") },
     ]);
     response.json({ analysis: parseJson(text) });
   } catch (error) {
@@ -96,7 +96,16 @@ function parseJson(text) {
   }
 }
 
-const analysisPrompt = `Analyze this image for RealityOS. Return only valid JSON matching this shape:
+function buildAnalysisPrompt(mode, language = "en-US") {
+  const focus = {
+    auto: "Identify the most useful visual context without assuming a category.",
+    document: "Prioritize document type, names, account numbers, dates, totals, deadlines, and instructions.",
+    product: "Prioritize product name, price, ingredients, warnings, expiry dates, and usage instructions.",
+    place: "Prioritize signs, addresses, opening hours, directions, landmarks, and accessibility information.",
+    object: "Prioritize what the object is, its condition, how it is used, safety concerns, and useful next steps.",
+    translate: `Detect all meaningful visible text, preserve the original wording in evidence, and provide a concise translation in ${language} when the source language differs.`,
+  }[mode] || "Identify the most useful visual context without assuming a category.";
+  return `Analyze this image for RealityOS. ${focus} Return only valid JSON matching this shape:
 {
   "object":{"name":"string","type":"string","confidence":0},
   "score":0,
@@ -106,4 +115,5 @@ const analysisPrompt = `Analyze this image for RealityOS. Return only valid JSON
   "objects":[{"id":1,"name":"string","confidence":0}],
   "suggestedActions":[{"id":"task","title":"string","description":"string","priority":"MEDIUM"}]
 }
-Extract useful visible facts only. Use an empty insights array when none are visible. Give every numeric confidence and score an integer from 0 to 100. Include at least one warning, object, and suggested action.`;
+Extract useful visible facts only. Use an empty insights array when none are visible. Give every numeric confidence and score an integer from 0 to 100. Include at least one warning, object, and suggested action. When a date, deadline, or expiry is visible, include a suggested action with id "calendar" so the user can add it to their calendar.`;
+}

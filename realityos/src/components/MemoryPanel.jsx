@@ -3,10 +3,13 @@ import {
   Search,
   Calendar,
   MapPin,
+  Trash2,
 } from "lucide-react";
+import { useState } from "react";
+import { getMemories, removeMemory } from "../services/memoryService";
 
 export default function MemoryPanel() {
-  const memories = [
+  const starterMemories = [
     {
       title: "Electricity account",
       detail: "City Power · AC-204891",
@@ -23,6 +26,15 @@ export default function MemoryPanel() {
       icon: MapPin,
     },
   ];
+  const [query, setQuery] = useState("");
+  const [saved, setSaved] = useState(() => getMemories());
+  const memories = [...saved.map((memory) => ({ ...memory, saved: true, icon: Brain })), ...starterMemories]
+    .filter((memory) => `${memory.title} ${memory.detail}`.toLowerCase().includes(query.toLowerCase()));
+
+  const forget = (id) => {
+    removeMemory(id);
+    setSaved((items) => items.filter((memory) => memory.id !== id));
+  };
 
   return (
     <div className="memory-page">
@@ -46,7 +58,7 @@ export default function MemoryPanel() {
       <div className="memory-search">
         <Search size={18} />
 
-        <input placeholder="Search your reality..." />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search your reality..." />
       </div>
 
       <div className="memory-list">
@@ -56,7 +68,7 @@ export default function MemoryPanel() {
           return (
             <div
               className="memory-card"
-              key={memory.title}
+              key={memory.id || memory.title}
             >
               <div className="memory-icon">
                 <Icon size={18} />
@@ -66,10 +78,12 @@ export default function MemoryPanel() {
                 <strong>{memory.title}</strong>
                 <span>{memory.detail}</span>
               </div>
+              {memory.saved && <button className="memory-remove" onClick={() => forget(memory.id)} aria-label={`Forget ${memory.title}`} title="Forget this memory"><Trash2 size={14} /></button>}
             </div>
           );
         })}
       </div>
+      {!memories.length && <div className="memory-empty"><Search size={17} /> No memories match that search.</div>}
     </div>
   );
 }

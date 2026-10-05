@@ -5,6 +5,7 @@ import {
   Hash,
   CheckCircle2,
   AlertCircle,
+  Brain,
 } from "lucide-react";
 
 const icons = {
@@ -16,6 +17,7 @@ const icons = {
 export default function ExtractedCard({
   insight,
   onEvidence,
+  onRemember,
 }) {
   const Icon = icons[insight.type] || Hash;
 
@@ -52,6 +54,15 @@ export default function ExtractedCard({
       >
         Evidence
       </button>
+
+      {onRemember && <button
+        className="remember-button"
+        onClick={() => onRemember(insight)}
+        aria-label={`Remember ${insight.label}`}
+        title="Remember this fact"
+      >
+        <Brain size={14} />
+      </button>}
     </div>
   );
 }

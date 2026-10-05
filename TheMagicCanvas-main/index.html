@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magic Canvas</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="canvas-container">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+
+        <div class="ui-container">
+          <!-- Home Button -->
+          <button id="btn-home" class="home-btn hidden" title="Back to Menu">🏠</button>
+
+          <!-- Top Mode Switch -->
+          <div id="mode-switch" class="mode-switch hidden">
+            <button id="btn-flower-mode" class="mode-btn active">🌸 Flowers</button>
+            <button id="btn-star-mode" class="mode-btn">⭐ Stars</button>
+          </div>
+
+          <div id="start-screen" class="panel">
+            <h1>Magic Canvas</h1>
+            <p>Paint with flowers and stars using your webcam.</p>
+            
+            <div class="mode-instructions">
+              <div class="mode-instruction-block">
+                 <h3>🌸 Flower Mode</h3>
+                 <ul class="instructions-list">
+                   <li>☝️ <strong>Draw:</strong> Point your finger</li>
+                   <li>✋ <strong>Pop:</strong> Open your palm</li>
+                 </ul>
+              </div>
+              <div class="mode-instruction-block">
+                 <h3>⭐ Star Mode</h3>
+                 <ul class="instructions-list">
+                   <li>☝️ <strong>Draw:</strong> Point your finger</li>
+                   <li>✊ <strong>Glow:</strong> Close your fist</li>
+                   <li>✋ <strong>Shoot:</strong> Open your hand</li>
+                 </ul>
+              </div>
+            </div>
+            
+            <button id="btn-start" class="btn">Enable Camera & Start</button>
+          </div>
+
+          <div id="loading-screen" class="panel hidden">
+            <h2>Loading Magic...</h2>
+            <p>Initializing AI models.</p>
+            <div class="loader"></div>
+          </div>
+
+          <div id="controls" class="controls hidden">
+             <div id="tutorial-text" class="tutorial-text">
+               Point to draw flowers • Open your hand to pop them!
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

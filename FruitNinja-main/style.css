@@ -1,0 +1,211 @@
+:root {
+  --primary-color: #ff3366;
+  --secondary-color: #ff9900;
+  --bg-dark: rgba(20, 20, 20, 0.8);
+  --text-light: #f4f4f4;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #000;
+  color: var(--text-light);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Webcam and Canvas Layout */
+#webcam {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* Mirror webcam */
+  z-index: 1;
+}
+
+#game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  /* Dark overlay so fruits pop */
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none; /* Let clicks pass through if needed, though we use hand */
+}
+
+/* UI Layer */
+#ui-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none; /* Allows UI interactions only on elements with pointer-events: auto */
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* HUD */
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+}
+
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.combo-container {
+  color: var(--secondary-color);
+  font-size: 2rem;
+  animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+.lives-container {
+  display: flex;
+  gap: 10px;
+}
+
+.life {
+  filter: grayscale(100%);
+  opacity: 0.3;
+  transition: all 0.3s;
+}
+
+.life.active {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/* Screens */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-dark);
+  backdrop-filter: blur(5px);
+  pointer-events: auto;
+  text-align: center;
+}
+
+.title {
+  font-size: 4rem;
+  margin-bottom: 10px;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  color: #aaa;
+}
+
+.instruction {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.privacy-note {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 40px;
+}
+
+/* Buttons */
+.btn {
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  pointer-events: auto;
+}
+
+.btn.primary {
+  background: linear-gradient(45deg, var(--primary-color), #cc0033);
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+}
+
+.btn.primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 51, 102, 0.8);
+}
+
+.btn.secondary {
+  background: var(--glass-bg);
+  color: white;
+  margin-top: 15px;
+}
+
+.btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Tracking Lost */
+#tracking-lost {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  transition: opacity 0.3s;
+}
+
+/* Controls Layer */
+#controls-layer {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  pointer-events: auto;
+  font-size: 0.9rem;
+  background: rgba(0,0,0,0.5);
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.error-msg {
+  color: #ff3333;
+  margin-top: 20px;
+  font-weight: bold;
+}

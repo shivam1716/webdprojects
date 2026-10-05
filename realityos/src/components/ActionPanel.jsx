@@ -3,12 +3,14 @@ import {
   CheckSquare,
   Navigation,
   ArrowUpRight,
+  CalendarPlus,
 } from "lucide-react";
 
 const actionIcons = {
   reminder: Bell,
   task: CheckSquare,
   navigate: Navigation,
+  calendar: CalendarPlus,
 };
 
 export default function ActionPanel({ actions, onAction }) {
